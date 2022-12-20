@@ -52,10 +52,10 @@ int main() {
     }
 
     // The parent likes classic rock:
-    // https://www.youtube.com/watch?v=lrpXArn3hII
-    send_msg(tx, "Tell me now\n");
-    send_msg(tx, "Is he good to you?\n");
-    send_msg(tx, "Can you make you the meals that I do?\n");
+    // https://www.youtube.com/watch?v=Kc71KZG87X4
+    send_msg(tx, "In the burning heart\n");
+    send_msg(tx, "Just about to burst\n");
+    send_msg(tx, "There's a quest for answers\n");
 
     fprintf(stderr, "[INFO]: closing pipe\n");
     close(tx);

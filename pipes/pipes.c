@@ -53,10 +53,10 @@ void send_msg(int tx, char const *str) {
 
 int parent_main(int tx) {
     // The parent likes classic rock:
-    // https://www.youtube.com/watch?v=lrpXArn3hII
-    send_msg(tx, "Hey little girl\n");
-    send_msg(tx, "Is your daddy home?\n");
-    send_msg(tx, "Did he go and leave you all alone?\n");
+    // https://www.youtube.com/watch?v=btPJPFnesV4
+    send_msg(tx, "It's the eye of the tiger\n");
+    send_msg(tx, "It's the thrill of the fight\n");
+    send_msg(tx, "Rising up to the challenge of our rival\n");
 
     fprintf(stderr, "[INFO]: closing pipe\n");
     close(tx);
