@@ -12,8 +12,8 @@
 
 #define FIFO_PATHNAME "fifo.pipe"
 
-// helper function to send messages
-// retries to send whatever was not sent in the begginning
+// Helper function to send messages
+// Retries to send whatever was not sent in the beginning
 void send_msg(int tx, char const *str) {
     size_t len = strlen(str);
     size_t written = 0;
@@ -30,28 +30,28 @@ void send_msg(int tx, char const *str) {
 }
 
 int main() {
-    // remove pipe if it does not exist
+    // Remove pipe if it does not exist
     if (unlink(FIFO_PATHNAME) != 0 && errno != ENOENT) {
         fprintf(stderr, "[ERR]: unlink(%s) failed: %s\n", FIFO_PATHNAME,
                 strerror(errno));
         exit(EXIT_FAILURE);
     }
 
-    // create pipe
+    // Create pipe
     if (mkfifo(FIFO_PATHNAME, 0640) != 0) {
         fprintf(stderr, "[ERR]: mkfifo failed: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
-    // open pipe for writing
-    // this waits for someone to open it for reading
+    // Open pipe for writing
+    // This waits for someone to open it for reading
     int tx = open(FIFO_PATHNAME, O_WRONLY);
     if (tx == -1) {
         fprintf(stderr, "[ERR]: open failed: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
-    // The parent is likes classic rock:
+    // The parent likes classic rock:
     // https://www.youtube.com/watch?v=lrpXArn3hII
     send_msg(tx, "Tell me now\n");
     send_msg(tx, "Is he good to you?\n");

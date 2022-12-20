@@ -14,8 +14,8 @@
 #define BUFFER_SIZE (128)
 
 int main() {
-    // open pipe for reading
-    // this waits for someone to open it for writing
+    // Open pipe for reading
+    // This waits for someone to open it for writing
     int rx = open(FIFO_PATHNAME, O_RDONLY);
     if (rx == -1) {
         fprintf(stderr, "[ERR]: open failed: %s\n", strerror(errno));
@@ -26,11 +26,11 @@ int main() {
         char buffer[BUFFER_SIZE];
         ssize_t ret = read(rx, buffer, BUFFER_SIZE - 1);
         if (ret == 0) {
-            // ret == 0 signals EOF
+            // ret == 0 indicates EOF
             fprintf(stderr, "[INFO]: pipe closed\n");
             return 0;
         } else if (ret == -1) {
-            // ret == -1 signals error
+            // ret == -1 indicates error
             fprintf(stderr, "[ERR]: read failed: %s\n", strerror(errno));
             exit(EXIT_FAILURE);
         }

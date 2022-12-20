@@ -34,8 +34,8 @@ int child_main(int rx) {
     return 0;
 }
 
-// helper function to send messages
-// retries to send whatever was not sent in the begginning
+// Helper function to send messages
+// Retries to send whatever was not sent in the beginning
 void send_msg(int tx, char const *str) {
     size_t len = strlen(str);
     size_t written = 0;
@@ -52,7 +52,7 @@ void send_msg(int tx, char const *str) {
 }
 
 int parent_main(int tx) {
-    // The parent is likes classic rock:
+    // The parent likes classic rock:
     // https://www.youtube.com/watch?v=lrpXArn3hII
     send_msg(tx, "Hey little girl\n");
     send_msg(tx, "Is your daddy home?\n");
@@ -61,7 +61,7 @@ int parent_main(int tx) {
     fprintf(stderr, "[INFO]: closing pipe\n");
     close(tx);
 
-    // parent waits for the child
+    // Parent waits for the child
     wait(NULL);
     return 0;
 }
@@ -74,9 +74,9 @@ int main() {
     }
 
     if (fork() == 0) {
-        // we need to close the ends we are not using
-        // otherwise, the child will be perpetually waiting for a message that
-        // will never come
+        // We need to close the ends we are not using
+        // Otherwise, the child will be perpetually
+        // Waiting for a message that will never come
         close(filedes[1]);
         return child_main(filedes[0]);
     } else {
