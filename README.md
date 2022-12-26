@@ -11,13 +11,13 @@ No final deste guião, deverá ser capaz de:
 
 ## Comunicação entre processos pai e filho usando _pipes_ simples
 
-1. Clone este repositório, usando o git: `git clone https://github.com/tecnico-so/lab_pipes.git`
+1. Clone este repositório, usando o comando: `git clone https://github.com/tecnico-so/lab_pipes.git`
 2. Estude o programa `pipes.c`, no qual um processo pai envia uma sequência de mensagens a um processo filho, que por sua vez as imprime no _stdout_ (_standard output_).
 3. Compile o programa `pipes.c` e experimente executá-lo, confirmando que o resultado é o esperado.
-4. Experimente colocar uma chamada à função `sleep` entre mensagens escritas, observando que fronteiras entre mensagens que se perdem.
+4. Experimente colocar uma chamada à função `sleep` entre mensagens escritas, observando que fronteiras entre mensagens se perdem.
 5. Pretende-se que, após cada linha enviada pelo processo pai, este fique à espera que o filho lhe envie um único _byte_ (qualquer) como uma confirmação (_acknowledgement_ ou apenas _ack_) que este recebeu a mensagem.
 Experimente usar o mesmo _pipe_ (colocando `sleep` no pai).
-Que que correu mal?
+O que correu mal?
 Porquê?
 Resolva usando 2 _pipes_.
 
