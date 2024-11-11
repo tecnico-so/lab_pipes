@@ -1,86 +1,90 @@
-#include <assert.h>
-#include <errno.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 #define BUFFER_SIZE (128)
 
-int child_main(int rx) {
-    while (true) {
-        char buffer[BUFFER_SIZE];
-        ssize_t ret = read(rx, buffer, BUFFER_SIZE - 1);
+int child_main(int fd) {
+    while (1) {
+        char buffer[BUFFER_SIZE + 1];
+        ssize_t bytes_read = read(fd, buffer, BUFFER_SIZE);
 
-        if (ret == 0) {
-            // ret == 0 signals EOF
-            fprintf(stderr, "[INFO]: parent closed the pipe\n");
+        if (bytes_read == 0) {
+            /* if read() returns 0, it reached EOF */
+            fprintf(stderr, "[INFO](child): parent closed the pipe\n");
             break;
-        } else if (ret == -1) {
-            // ret == -1 signals error
-            fprintf(stderr, "[ERR]: read failed: %s\n", strerror(errno));
-            exit(EXIT_FAILURE);
+        } else if (bytes_read == -1) {
+            /* read() returning -1 signals an error occurred */
+            perror("[ERR](child): read failed");
+            return EXIT_FAILURE;
         }
 
-        fprintf(stderr, "[INFO]: parent sent %zd B\n", ret);
-        buffer[ret] = 0;
+        fprintf(stderr, "[INFO](child): parent sent %zdB\n", bytes_read);
+
+        buffer[bytes_read] = '\0';
         fputs(buffer, stdout);
     }
 
-    close(rx);
-    return 0;
+    close(fd);
+    return EXIT_SUCCESS;
 }
 
-// Helper function to send messages
-// Retries to send whatever was not sent in the beginning
-void send_msg(int tx, char const *str) {
+/**
+ * helper function to send messages
+ */
+void send_msg(int fd, char const *str) {
     size_t len = strlen(str);
-    size_t written = 0;
+    size_t bytes_written = 0;
 
-    while (written < len) {
-        ssize_t ret = write(tx, str + written, len - written);
+    while (bytes_written < len) {
+        ssize_t ret = write(fd, str + bytes_written, len - bytes_written);
+
         if (ret < 0) {
-            fprintf(stderr, "[ERR]: write failed: %s\n", strerror(errno));
+            perror("[ERR](parent): write failed");
             exit(EXIT_FAILURE);
         }
 
-        written += ret;
+        bytes_written += ret;
     }
+
+    fprintf(stderr, "[INFO](parent): message sent. waiting ack.\n");
 }
 
-int parent_main(int tx) {
-    // The parent likes classic rock:
-    // https://www.youtube.com/watch?v=btPJPFnesV4
-    send_msg(tx, "It's the eye of the tiger\n");
-    send_msg(tx, "It's the thrill of the fight\n");
-    send_msg(tx, "Rising up to the challenge of our rival\n");
+int parent_main(int fd) {
+    /**
+     * the parent likes dad rock :)
+     * https://www.youtube.com/watch?v=btPJPFnesV4
+     */
+    send_msg(fd, "It's the eye of the tiger\n");
+    send_msg(fd, "It's the thrill of the fight\n");
+    send_msg(fd, "Rising up to the challenge of our rival\n");
 
-    fprintf(stderr, "[INFO]: closing pipe\n");
-    close(tx);
+    fprintf(stderr, "[INFO](parent): closing pipe\n");
+    close(fd);
 
-    // Parent waits for the child
+    /* parent waits for the child */
     wait(NULL);
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 int main() {
-    int filedes[2];
-    if (pipe(filedes) != 0) {
-        fprintf(stderr, "[ERR]: pipe() failed: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
+    int fildes[2];
+    if (pipe(fildes) == -1) {
+        perror("[ERR](main): pipe() failed");
+        return EXIT_FAILURE;
     }
 
     if (fork() == 0) {
-        // We need to close the ends we are not using
-        // Otherwise, the child will be perpetually
-        // Waiting for a message that will never come
-        close(filedes[1]);
-        return child_main(filedes[0]);
+        /**
+         * we need to close the ends we are not using, otherwise, the child will
+         * be perpetually waiting for a message that will never come
+         */
+        close(fildes[1]);
+        return child_main(fildes[0]);
     } else {
-        close(filedes[0]);
-        return parent_main(filedes[1]);
+        close(fildes[0]);
+        return parent_main(fildes[1]);
     }
 }
