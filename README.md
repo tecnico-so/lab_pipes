@@ -38,10 +38,10 @@ Resolva usando 2 *pipes*.
 
 ## 2. Comunicação entre processos usando *named pipes*
 
-Quando se pretende comunicar entre processos lançados independentemente, pode utilizar-se um *named pipe*, também designado por **fifo**, de ***First-In, First-Out***.
+Quando se pretende comunicar entre processos lançados independentemente, pode utilizar-se um *named pipe*, também designado por *fifo*, que abrevia *First-In, First-Out*.
 
 Apesar de possuir um nome no sistema de ficheiros, continua a representar um canal de comunicação. 
-Os dados são consumidos pela leitura e não ficam armazenados como num ficheiro regular.
+Os dados são consumidos pela leitura e **não** ficam armazenados como num ficheiro regular.
 
 **2.1.** Estude os programas `named_pipes_sender.c` e `named_pipes_receiver.c`, que implementam a mesma lógica do exemplo anterior, mas agora entre dois processos lançados autonomamente.
 Para tal, recorrem aos chamados *named pipes* (canais com nome), criado com a operação [`mkfifo`](https://man7.org/linux/man-pages/man3/mkfifo.3.html).
@@ -61,10 +61,10 @@ Tal como acontece com os *pipes* simples, os *named pipes* são unidirecionais, 
 
 ## Conclusão
 
-Neste laboratório estudámos dois mecanismos comunicação entre processos: *pipes* e *named pipes*, também designados *FIFOs* (*First-In, First-Out*).
+Neste laboratório estudámos dois mecanismos comunicação entre processos: *pipes* e *named pipes*.
 
 Um *pipe* permite transportar um fluxo ordenado de *bytes* entre processos. 
-Quando é criado antes de um `fork`, os seus descritores podem ser herdados pelo processo filho, tornando-o particularmente adequado para comunicação entre processos relacionados.
+Quando é criado antes de um `fork`, os seus descritores podem ser herdados pelo processo filho, tornando-o particularmente adequado para comunicação entre processos relacionados desta forma.
 
 As FIFOs aplicam princípios semelhantes, mas possuem um nome no sistema de ficheiros. 
 Por esse motivo, podem ser abertas por processos lançados independentemente e constituem uma forma simples de comunicação entre processos que não partilham uma relação pai-filho.
